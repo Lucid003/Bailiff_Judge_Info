@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+  <h1>Hi, {{ current_user.username }}!</h1>
+  <br>
+  {% for judge in judges %}
+    <p><a href="{{ url_for('main.judge', judgename=judge.name) }}">{{ judge.name }}</p>
+  {% endfor %}
+{% endblock %}
