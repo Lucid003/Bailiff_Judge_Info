@@ -21,6 +21,13 @@ def judge(judgename):
   judge = Judge.query.filter_by(name=judgename).first_or_404()
   # categories = judge.
   form = PostForm()
+  if form.validate_on_submit():
+    post = Post(body=form.post.data, title=form.title.data)
+    db.session.add(post)
+    db.session.commit()
+    flash('Your post is now live!')
+    return redirect(url_for('main.judge', judgename=judgename))
+
   posts = Post.query.join(Judge.posts)
   return render_template('judge.html', judge=judge, 
                          posts=posts, form=form)

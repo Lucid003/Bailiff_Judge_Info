@@ -50,7 +50,7 @@ class Post(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   title = db.Column(db.String(50))
   body = db.Column(db.String(10000))
-  user_id = db.Column(db.Integer, db.ForeignKey('judge.id'))
+  judge_id = db.Column(db.Integer, db.ForeignKey('judge.id'))
 
   def __repr__(self):
     return '<Post {}>'.format(self.body)

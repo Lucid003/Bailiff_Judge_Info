@@ -1,8 +1,8 @@
-"""users, posts, judges tables
+"""user post judges tables
 
-Revision ID: 95105c7bf9ed
+Revision ID: 4568e7bfec90
 Revises: 
-Create Date: 2021-04-23 20:57:32.027721
+Create Date: 2021-04-24 23:17:21.824924
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '95105c7bf9ed'
+revision = '4568e7bfec90'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -29,15 +29,16 @@ def upgrade():
     sa.Column('password_hash', sa.String(length=128), nullable=True),
     sa.Column('last_seen', sa.DateTime(), nullable=True),
     sa.Column('permissions', sa.Integer(), nullable=True),
+    sa.Column('judge', sa.String(length=64), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_user_username'), 'user', ['username'], unique=True)
     op.create_table('post',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('title', sa.String(length=140), nullable=True),
-    sa.Column('body', sa.String(length=1000), nullable=True),
-    sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['user_id'], ['judge.id'], ),
+    sa.Column('title', sa.String(length=50), nullable=True),
+    sa.Column('body', sa.String(length=10000), nullable=True),
+    sa.Column('judge_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['judge_id'], ['judge.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
