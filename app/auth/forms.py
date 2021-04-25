@@ -12,10 +12,12 @@ class LoginForm(FlaskForm):
 
 class RegistrationForm(FlaskForm):
   username = StringField('Username', validators=[DataRequired()])
+  displayname = StringField('Display Name', validators=[DataRequired()])
   password = PasswordField('Password', validators=[DataRequired()])
   password2 = PasswordField('Repeat Password', validators=[DataRequired(),
                                       EqualTo('password')])
   judge = SelectField('Judge')
+  permissions = SelectField('Permissions')
   submit = SubmitField('Register')
 
   def validate_username(self, username):
@@ -27,6 +29,8 @@ class RegistrationForm(FlaskForm):
 class EditUserForm(FlaskForm):
   username = SelectField('Username')
   judge = SelectField('Judge')
+  permissions = SelectField('Permissions')
+  delete = BooleanField('Delete User?')
   submit = SubmitField('Submit')
 
 

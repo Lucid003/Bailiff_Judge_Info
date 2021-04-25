@@ -4,14 +4,16 @@
 
 {% block app_content %}
   <h1>Judge {{ judge.name }}</h1>
+  {% if ( (current_user.judge == judge.name) or
+          (current_user.permissions > 0) ) %}
+    {{ wtf.quick_form(form) }}
+  {% endif %}
   {% if posts %}
     {% for post in posts %}
       {% include '_post.html' %}
     {% endfor %}
   {% else %}
-    <p>There currently isn't any information available for Judge {{ judge }}. {% if current_user.judge != judge %}Ask their bailiff to add something! {% else %}Consider adding something in the form below!{% endif %}
-  {% endif %}
-  {% if form %}
-    {{ wtf.quick_form(form) }}
+    <br>
+    <p>There currently isn't any information available for Judge {{ judge.name }}. {% if current_user.judge != judge.name %}Ask their bailiff to add something! {% else %}Consider adding something in the form above!{% endif %}
   {% endif %}
 {% endblock %}

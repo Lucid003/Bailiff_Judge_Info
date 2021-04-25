@@ -34,20 +34,24 @@ def logout():
 
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
-  if current_user.is_authenticated:
-    return redirect(url_for('main.index'))
-  judges = Judge.query.all()
-  judge_names = [judge.name for judge in judges]
-  form = RegistrationForm()
-  form.judge.choices = judge_names
-  if form.validate_on_submit():
-    user = User(username=form.username.data, judge=form.judge.data)
-    user.set_password(form.password.data)
-    db.session.add(user)
-    db.session.commit()
-    flash('Congratulations, you are now a registered user!')
-    return redirect(url_for('auth.login'))
-  return render_template('auth/register.html', title='Register', form=form)
+  if current_user.permissions == 2:
+    judge_names = [judge.name for judge in Judge.query.all()]
+    judge_names.insert(0, 'None')
+    permissions = [(0, 'bailiff'), (1, 'manager'), (2, 'admin')]
+    form = RegistrationForm()
+    form.judge.choices = judge_names
+    form.permissions.choices = permissions
+    if form.validate_on_submit():
+      user = User(username=form.username.data,
+                  displayname=form.displayname.data,
+                  judge=form.judge.data,
+                  permissions=form.permissions.data)
+      user.set_password(form.password.data)
+      db.session.add(user)
+      db.session.commit()
+      flash('{} is now a registered user.'.format(form.username.data))
+      return redirect(url_for('auth.login'))
+    return render_template('auth/register.html', title='Register', form=form)
 
 
 @bp.route('/reset_password_request', methods=['GET', 'POST'])
@@ -83,18 +87,25 @@ def reset_password(token):
 
 @bp.route('/edit_user', methods=['GET', 'POST'])
 def edit_user():
-  judges = Judge.query.all()
-  judge_names = [judge.name for judge in judges]
-  users = User.query.all()
-  user_names = [user.username for user in users]
-  form = EditUserForm()
-  form.username.choices = user_names
-  form.judge.choices = judge_names
-  if form.validate_on_submit():
-    form.username = form.username.data
-    form.judge = form.judge.data
-    db.session.commit()
-    flash('Your changes have been saved.')
-    return redirect(url_for('auth.edit_user'))
-  return render_template('auth/edit_user.html', title='Edit User', 
-                        form=form)
+  if current_user.permissions == 2:
+    judge_names = [judge.name for judge in Judge.query.all()]
+    judge_names.insert(0, 'None')
+    users = User.query.all()
+    user_names = [user.username for user in users]
+    permissions = [(0, 'bailiff'), (1, 'manager'), (2, 'admin')]
+    form = EditUserForm()
+    form.username.choices = user_names
+    form.judge.choices = judge_names
+    form.permissions.choices = permissions
+    if form.validate_on_submit():
+      user = User.query.filter_by(username=form.username.data).first()
+      if form.delete.data == 1:
+        db.session.delete(user)
+      else:
+        user.judge = form.judge.data
+        user.permissions = form.permissions.data
+      db.session.commit()
+      flash('Your changes have been saved.')
+      return redirect(url_for('auth.edit_user'))
+    return render_template('auth/edit_user.html', title='Edit User', 
+                          form=form)

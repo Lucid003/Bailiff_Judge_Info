@@ -10,6 +10,7 @@ from app import db, login  # these are imported from the __init__.py file
 class User(UserMixin, db.Model):
   id = db.Column(db.Integer, primary_key=True)
   username = db.Column(db.String(64), index=True, unique=True)
+  displayname = db.Column(db.String(64), unique=True)
   password_hash = db.Column(db.String(128))
   last_seen = db.Column(db.DateTime, default=datetime.utcnow)
   permissions = db.Column(db.Integer) # 0=user, 1=Manager, 2=Admin
