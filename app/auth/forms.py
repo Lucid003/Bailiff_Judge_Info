@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
+from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, InputRequired
 from app.models import User
 
 class LoginForm(FlaskForm):
@@ -28,6 +28,7 @@ class RegistrationForm(FlaskForm):
 
 class EditUserForm(FlaskForm):
   username = SelectField('Username')
+  displayname = StringField('Display Name')
   judge = SelectField('Judge')
   permissions = SelectField('Permissions')
   delete = BooleanField('Delete User?')
@@ -63,3 +64,15 @@ class AdminAddUser(FlaskForm):
   #judge = SelectField('Assigned to Judge', choices) # figure this out
   permissions = SelectField('Permissions', [0, 1, 2])
   submit = SubmitField('Add User')
+
+
+class ChangePasswordForm(FlaskForm):
+  old_password = PasswordField('Current Password',
+                               validators=[InputRequired()])
+  new_password = PasswordField('New Password',
+                               validators=[InputRequired()])
+  new_password2 = PasswordField('Repeat New Password',
+                                validators=[InputRequired(),
+                                EqualTo('new_password', 
+                                        message='Passwords must match')])
+  submit = SubmitField('Change Password')

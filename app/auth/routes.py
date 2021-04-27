@@ -1,10 +1,10 @@
 from flask import render_template, redirect, url_for, flash, request
 from werkzeug.urls import url_parse
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user, current_user, login_required
 from app import db
 from app.auth import bp
 from app.auth.forms import LoginForm, ResetPasswordRequestForm, ResetPasswordForm, RegistrationForm, \
-                           EditUserForm
+                           EditUserForm, ChangePasswordForm
 from app.models import User, Judge
 
 
@@ -14,7 +14,7 @@ def login():
     return redirect(url_for('main.index'))
   form = LoginForm()
   if form.validate_on_submit():
-    user = User.query.filter_by(username=form.username.data).first()
+    user = User.query.filter_by(username=form.username.data.lower()).first()
     if user is None or not user.check_password(form.password.data):
       flash('Invalid username or password')
       return redirect(url_for('auth.login'))
@@ -33,6 +33,7 @@ def logout():
 
 
 @bp.route('/register', methods=['GET', 'POST'])
+@login_required
 def register():
   if current_user.permissions == 2:
     judge_names = [judge.name for judge in Judge.query.all()]
@@ -42,7 +43,7 @@ def register():
     form.judge.choices = judge_names
     form.permissions.choices = permissions
     if form.validate_on_submit():
-      user = User(username=form.username.data,
+      user = User(username=form.username.data.lower(),
                   displayname=form.displayname.data,
                   judge=form.judge.data,
                   permissions=form.permissions.data)
@@ -86,6 +87,7 @@ def reset_password(token):
 
 
 @bp.route('/edit_user', methods=['GET', 'POST'])
+@login_required
 def edit_user():
   if current_user.permissions == 2:
     judge_names = [judge.name for judge in Judge.query.all()]
@@ -102,6 +104,7 @@ def edit_user():
       if form.delete.data == 1:
         db.session.delete(user)
       else:
+        user.displayname = form.displayname.data
         user.judge = form.judge.data
         user.permissions = form.permissions.data
       db.session.commit()
@@ -109,3 +112,19 @@ def edit_user():
       return redirect(url_for('auth.edit_user'))
     return render_template('auth/edit_user.html', title='Edit User', 
                           form=form)
+
+
+@bp.route('/change_password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+  form = ChangePasswordForm()
+  if form.validate_on_submit():
+    if current_user.check_password(form.old_password.data):
+      current_user.set_password(form.new_password.data)
+      db.session.commit()
+      flash('Your password has been changed.')
+      return redirect(url_for('main.user', username=current_user.username))
+    else:
+      flash('Current password incorrect.')
+      return redirect(url_for('auth.change_password'))
+  return render_template('auth/change_password.html', form=form)

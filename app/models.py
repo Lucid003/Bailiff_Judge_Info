@@ -12,6 +12,7 @@ class User(UserMixin, db.Model):
   username = db.Column(db.String(64), index=True, unique=True)
   displayname = db.Column(db.String(64), unique=True)
   password_hash = db.Column(db.String(128))
+  about_me = db.Column(db.String(500))
   last_seen = db.Column(db.DateTime, default=datetime.utcnow)
   permissions = db.Column(db.Integer) # 0=user, 1=Manager, 2=Admin
   judge = db.Column(db.String(64))
@@ -51,13 +52,24 @@ class Post(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   title = db.Column(db.String(50))
   body = db.Column(db.String(10000))
+  category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
   judge_id = db.Column(db.Integer, db.ForeignKey('judge.id'))
 
   def __repr__(self):
     return '<Post {}>'.format(self.body)
 
 
+class Category(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  name = db.Column(db.String(50))
+  content = db.relationship('Post', backref='category', lazy='dynamic')
+
+
 class Judge(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(64))
   posts = db.relationship('Post', backref='judge', lazy='dynamic')
+
+  def avatar(self):
+    return 'https://bailiffjudgeinfo.stingchameleon.repl.co/static/{}.jpg'\
+            .format(self.name)

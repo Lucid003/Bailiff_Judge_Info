@@ -21,3 +21,9 @@ class EditPostForm(FlaskForm):
     super(EditPostForm, self).__init__(*args, **kwargs)
     self.original_title = original_title
     self.original_post = original_post
+
+
+class EditProfileForm(FlaskForm):
+  about_me = TextAreaField('About me',
+                           validators=[Length(min=0, max=240)])
+  submit = SubmitField('Submit')

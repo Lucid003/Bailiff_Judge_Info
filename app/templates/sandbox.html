@@ -14,9 +14,14 @@
     {{ wtf.quick_form(form) }}
   {% endif %}
   {% if posts %}
+  {% for category in categories %}
+    <h2>{{ category }}</h2><br>
     {% for post in posts %}
-      {% include '_post.html' %}
+      {% if post.category == category %}
+        {% include '_post.html' %}
+      {% endif %}
     {% endfor %}
+  {% endfor %}
   {% else %}
     <br>
     <p>There currently isn't any information available for Judge {{ judge.name }}. {% if current_user.judge != judge.name %}Ask their bailiff to add something! {% else %}Consider adding something in the form above!{% endif %}
