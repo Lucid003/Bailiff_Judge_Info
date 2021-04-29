@@ -4,7 +4,7 @@ from flask import render_template, flash, redirect, url_for, request, g, \
 from flask_login import current_user, login_required
 from app import db
 from app.main.forms import PostForm, EditPostForm, EditProfileForm
-from app.models import User, Judge, Post
+from app.models import User, Judge, Post, Category
 from app.main import bp
 
 
@@ -27,22 +27,31 @@ def index():
 @login_required
 def judge(judgename):
   judge = Judge.query.filter_by(name=judgename).first_or_404()
-  # categories = judge.
+  categories = Category.query.all()
   form = PostForm()
+  form.category.choices = [(cat.id, cat.name) for cat in categories]
   if form.validate_on_submit():
-    post = Post(body=form.post.data, title=form.title.data, judge_id=judge.id)
+    cat_id = Category.query.filter_by(name=form.category.data)
+    post = Post(body=form.post.data,
+                judge_id=judge.id,
+                category_id=form.category.data)
     db.session.add(post)
     db.session.commit()
     flash('Your post is now live!')
     return redirect(url_for('main.judge', judgename=judgename))
-  posts = judge.posts.filter(Judge.id==Post.id)
-
+  posts = judge.posts.filter(Judge.id==Post.id)\
+                            .order_by(Post.category_id.asc())
   if posts.count() > 0:
+    cats = []
+    for post in posts:
+      if post.category_id not in cats:
+        cats.append(post.category_id)
     return render_template('judge.html', judge=judge, 
-                           posts=posts, form=form)
+                           posts=posts, categories=categories,
+                           cats=cats, form=form)
   else:
     return render_template('judge.html', judge=judge, 
-                           form=form)
+                           categories=categories, form=form)
 
 
 @bp.route('/edit_post/<int:id>', methods=['GET', 'POST'])
@@ -55,13 +64,11 @@ def edit_post(id):
     if form.delete.data == 1:
       db.session.delete(post)
     else:
-      post.title = form.title.data
       post.body = form.post.data
     db.session.commit()
     flash('Your changes have been saved.')
     return redirect(url_for('main.judge', judgename=judgename))
   elif request.method == "GET":
-    form.title.data = post.title
     form.post.data = post.body
   return render_template('edit_post.html', judgename=judgename,
                          form=form)

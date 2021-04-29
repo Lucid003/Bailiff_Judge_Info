@@ -14,8 +14,15 @@
     {{ wtf.quick_form(form) }}
   {% endif %}
   {% if posts %}
-    {% for post in posts %}
-      {% include '_post.html' %}
+    {% for category in categories %}
+      {% if category.id in cats %}
+      <h2>{{ category.name }}</h2><br>
+        {% for post in posts %}
+          {% if post.category_id == category.id %}
+            {% include '_post.html' %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
     {% endfor %}
   {% else %}
     <br>

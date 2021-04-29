@@ -1,18 +1,17 @@
 from flask import request
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField, BooleanField
+from wtforms import StringField, SubmitField, TextAreaField, BooleanField, SelectField
 from wtforms.validators import ValidationError, DataRequired, Length
 from app.models import User
 
 
 class PostForm(FlaskForm):
-  title = StringField('Subject', validators=[DataRequired()])
+  category = SelectField('Category', validators=[DataRequired()])
   post = TextAreaField('Add Details Here', validators=[DataRequired()])
   submit = SubmitField('Submit')
 
 
 class EditPostForm(FlaskForm):
-  title = StringField('Title', validators=[DataRequired()])
   post = TextAreaField('Add Details Here', validators=[DataRequired()])
   delete = BooleanField('Delete Post?')
   submit = SubmitField('Submit Changes')

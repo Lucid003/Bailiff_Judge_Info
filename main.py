@@ -1,12 +1,12 @@
 from app import create_app, db
-from app.models import User, Post, Judge
+from app.models import User, Post, Judge, Category
 
 app = create_app()
 
 
 @app.shell_context_processor
 def make_shell_context():
-	return {'db': db, 'User': User, 'Post': Post, 'Judge': Judge}
+	return {'db': db, 'User': User, 'Post': Post, 'Judge': Judge, 'Category': Category}
 
 
 if __name__ == '__main__':

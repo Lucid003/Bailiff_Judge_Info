@@ -1,6 +1,6 @@
     <table>
         <tr valign="top">
-            <td><br><h3>{{ post.title }}</h3><br><br><pre>{{ post.body }}</pre><br><br>
+            <td><pre>{{ post.body }}</pre>
               {% if current_user.judge == judge.name %}
               <a href="{{ url_for('main.edit_post', id=post.id, judgename=judge.name) }}">Click here to edit your post</a>
               {% endif %}
