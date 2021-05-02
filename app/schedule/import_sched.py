@@ -66,12 +66,12 @@ def import_schedule(schedule):
         data_list.append(combined_cells)
         data_string = '\n'.join([data for data in data_list])
     
-        workday = Workday(weekday=weekday,
+    workday = Workday(weekday=weekday,
                       date=parsed_date,
                       data=data_string)
         
-        db.session.add(workday)
-        db.session.commit()
+    db.session.add(workday)
+    db.session.commit()
 
     index += 1
   
