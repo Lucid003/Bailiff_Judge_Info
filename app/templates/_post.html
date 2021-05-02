@@ -2,7 +2,7 @@
         <tr valign="top">
             <td><pre>{{ post.body }}</pre>
               {% if current_user.judge == judge.name %}
-              <a href="{{ url_for('main.edit_post', id=post.id, judgename=judge.name) }}">Click here to edit your post</a>
+              <a href="{{ url_for('main.edit_post', id=post.id, judgename=judge.name) }}">Click here to edit your post</a><br><br>
               {% endif %}
             </td>
         </tr>

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+<p>before for clause</p>
+  {% for date in dates %}
+    <p>after for date in dates</p>
+    <table class="table table-hover">
+      <tr>{ date.weekday }</tr>
+        { for line in data.splitlines() }
+        <td>{ line }</td>
+        {% endfor %}
+    </table>
+{% endblock %}

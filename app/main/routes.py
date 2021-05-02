@@ -42,10 +42,7 @@ def judge(judgename):
   posts = judge.posts.filter(Judge.id==Post.id)\
                             .order_by(Post.category_id.asc())
   if posts.count() > 0:
-    cats = []
-    for post in posts:
-      if post.category_id not in cats:
-        cats.append(post.category_id)
+    cats = {post.category_id for post in posts}
     return render_template('judge.html', judge=judge, 
                            posts=posts, categories=categories,
                            cats=cats, form=form)

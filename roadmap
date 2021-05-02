@@ -1,7 +1,12 @@
--add categories to judge pages
+-fix email/password reset
 -add manager user registration page
 -add manager user edit page
 
+-generic file uploading function with security
+-excel parsing schedule import
+
+-judge courtrooms (civil & sentencing)
+-judge jury & civil months  
 
 
 -facelift

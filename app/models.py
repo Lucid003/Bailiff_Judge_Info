@@ -1,4 +1,5 @@
-from datetime import datetime
+import datetime
+from dateutil.relativedelta import relativedelta, MO, FR
 from hashlib import md5
 from time import time
 from flask import current_app
@@ -13,7 +14,7 @@ class User(UserMixin, db.Model):
   displayname = db.Column(db.String(64), unique=True)
   password_hash = db.Column(db.String(128))
   about_me = db.Column(db.String(500))
-  last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+  last_seen = db.Column(db.DateTime, default=datetime.datetime.utcnow)
   permissions = db.Column(db.Integer) # 0=user, 1=Manager, 2=Admin
   judge = db.Column(db.String(64))
   
@@ -73,3 +74,20 @@ class Judge(db.Model):
   def avatar(self):
     return 'https://bailiffjudgeinfo.stingchameleon.repl.co/static/{}.jpg'\
             .format(self.name)
+
+class Workday(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  weekday = db.Column(db.String(9))
+  date = db.Column(db.Date)
+  data = db.Column(db.Text)
+
+# helper function to find last monday
+def last_monday():
+  today = datetime.date.today()
+  last_monday = today + relativedelta(weekday=MO(-1))
+  return last_monday
+
+# helper function to find next week's friday
+# used for preset 2-week schedule
+def next_week_friday():
+  end = last_monday() + relativedelta(weeks=+1, weekday=FR(+1))

@@ -40,6 +40,9 @@ def create_app(config_class=Config):
   from app.main import bp as main_bp
   app.register_blueprint(main_bp)
 
+  from app.schedule import bp as schedule_bp
+  app.register_blueprint(schedule_bp, url_prefix='/schedule')
+
   if not app.debug and not app.testing:
     if not os.path.exists('logs'):
       os.mkdir('logs')

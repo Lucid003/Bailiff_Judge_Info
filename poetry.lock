@@ -432,8 +432,21 @@ email = ["email-validator"]
 ipaddress = ["ipaddress"]
 locale = ["Babel (>=1.3)"]
 
+[[package]]
+category = "main"
+description = "Library for developers to extract data from Microsoft Excel (tm) .xls spreadsheet files"
+name = "xlrd"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
+version = "2.0.1"
+
+[package.extras]
+build = ["wheel", "twine"]
+docs = ["sphinx"]
+test = ["pytest", "pytest-cov"]
+
 [metadata]
-content-hash = "53b426a93a155d49f74fbcafebef966bfc68aa06e3506011ad9fd4184a0c8e4b"
+content-hash = "1d73800f66cc4bce5f7a217bd8531e1c88be8ef4009a2dbee3f8a30fa31384a8"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -755,4 +768,8 @@ werkzeug = [
 wtforms = [
     {file = "WTForms-2.3.3-py2.py3-none-any.whl", hash = "sha256:7b504fc724d0d1d4d5d5c114e778ec88c37ea53144683e084215eed5155ada4c"},
     {file = "WTForms-2.3.3.tar.gz", hash = "sha256:81195de0ac94fbc8368abbaf9197b88c4f3ffd6c2719b5bf5fc9da744f3d829c"},
+]
+xlrd = [
+    {file = "xlrd-2.0.1-py2.py3-none-any.whl", hash = "sha256:6a33ee89877bd9abc1158129f6e94be74e2679636b8a205b43b85206c3f0bbdd"},
+    {file = "xlrd-2.0.1.tar.gz", hash = "sha256:f72f148f54442c6b056bf931dbc34f986fd0c3b0b6b5a58d013c9aef274d0c88"},
 ]
