@@ -7,11 +7,11 @@ from app import db
 from app.models import Workday
 
 
-def import_schedule(schedule):
+def import_schedule(schedule_obj):
   day_index = []
   end_index = []
 
-  with xlrd.open_workbook(schedule) as wb:
+  with xlrd.open_workbook(file_contents=schedule_obj) as wb:
     cs = wb.sheet_by_index(0)
     num_cols = cs.ncols
     num_rows = cs.nrows
@@ -57,7 +57,7 @@ def import_schedule(schedule):
       if i == day_indices[index][0]:
         day_cell = pattern.match(cell1)
         str_date = day_cell.group('M') + str(day_cell.group('D'))
-        parsed_date = parse(str_date)
+        parsed_date = parse(str_date).date()
         weekday = day_cell.group('WD')
       elif cell1 == '': # ignore empty cells
         pass

@@ -91,3 +91,4 @@ def last_monday():
 # used for preset 2-week schedule
 def next_week_friday():
   end = last_monday() + relativedelta(weeks=+1, weekday=FR(+1))
+  return end

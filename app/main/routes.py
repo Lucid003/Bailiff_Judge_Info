@@ -1,11 +1,17 @@
+import os
+import imghdr
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, g, \
-  jsonify, current_app
+  jsonify, current_app, abort
 from flask_login import current_user, login_required
 from app import db
-from app.main.forms import PostForm, EditPostForm, EditProfileForm
+from app.main.forms import PostForm, EditPostForm, EditProfileForm, UploadForm
 from app.models import User, Judge, Post, Category
 from app.main import bp
+from werkzeug.utils import secure_filename
+from app.schedule.import_sched import import_schedule
+from xlrd import inspect_format
+
 
 
 @bp.before_request # decorator from Flask registers the function to be executed before the view function
@@ -96,3 +102,31 @@ def edit_profile():
     form.about_me.data = current_user.about_me
   return render_template('edit_profile.html', title='Edit Profile', 
                          form=form)
+
+
+def validate_image(stream):
+  header = stream.read(512)
+  stream.seek(0)
+  format = imghdr.what(None, header)
+  if not format:
+    return None
+  return '.' + (format if format != 'jpeg' else 'jpg')
+
+
+@bp.route('/upload', methods=['GET', 'POST'])
+@login_required
+def upload():
+  if request.method == 'POST':
+    upload_file = request.files['file']
+    filename = secure_filename(upload_file.filename)
+    if filename != '':
+      file_ext = os.path.splitext(filename)[1]
+      if file_ext in current_app.config['UPLOAD_EXTENSIONS']['excel'] :
+        import_schedule(upload_file.read())
+      elif file_ext in current_app.config['UPLOAD_EXTENSIONS']['images'] or \
+          file_ext == validate_image(upload_file.stream):
+        upload_file.save(os.path.join('static/avatars', current_user.get_id()))
+      else:
+        abort(400)
+    return redirect(url_for('main.index'))
+  return render_template('upload.html')

@@ -1,58 +1,26 @@
 {% extends "base.html" %}
-
 {% import 'bootstrap/wtf.html' as wtf %}
 
-{% block app_content %}
-  <table class="table table-hover">
-    <tr>
-      <td width="200px"><img src="{{ judge.avatar() }}" width="100"></td>
-      <td><h1>Judge {{ judge.name }}</h1></td>
-    </tr>
-  </table>
-  {% if ( (current_user.judge == judge.name) or
-          (current_user.permissions > 0) ) %}
-    {{ wtf.quick_form(form) }}
-  {% endif %}
-  {% if posts %}
-    {% for category in categories %}
-      <h2>{{ category }}</h2><br>
-      {% for post in posts %}
-        {% if post.category_id == category %}
-          {% include '_post.html' %}
-        {% endif %}
-      {% endfor %}
-    {% endfor %}
-  {% else %}
-    <br>
-    <p>There currently isn't any information available for Judge {{ judge.name }}. {% if current_user.judge != judge.name %}Ask their bailiff to add something! {% else %}Consider adding something in the form above!{% endif %}
-  {% endif %}
-{% endblock %}
-
-
-
-
-
-{% extends "base.html" %}
-
-{% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-  <table class="table table-hover">
-    <tr>
-      <td width="200px"><img src="{{ judge.avatar() }}" width="100"></td>
-      <td><h1>Judge {{ judge.name }}</h1></td>
-    </tr>
-  </table>
-  {% if ( (current_user.judge == judge.name) or
-          (current_user.permissions > 0) ) %}
-    {{ wtf.quick_form(form) }}
-  {% endif %}
-  {% if posts %}
-    {% for post in posts %}
-      {% include '_post.html' %}
-    {% endfor %}
-  {% else %}
-    <br>
-    <p>There currently isn't any information available for Judge {{ judge.name }}. {% if current_user.judge != judge.name %}Ask their bailiff to add something! {% else %}Consider adding something in the form above!{% endif %}
-  {% endif %}
+  <div class="table-responsive col-sm-8"> 
+    <table class="table table-striped table-bordered" style="white-space: pre;font-family:'Courier New'">
+      <thead>
+        <tr>
+          {% for date in dates %}
+          <th scope="col">{{ date. weekday }}  {{ date.date.strftime('%b %d') }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        <tr>{% for date in dates %}
+          <td>
+            {% for line in date.data.splitlines() %}
+              {{ line }}
+            {% endfor %}
+          </td>
+        {% endfor %}</tr>
+      </tbody>
+    </table>
+  </div>
 {% endblock %}

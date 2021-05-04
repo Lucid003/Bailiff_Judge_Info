@@ -15,3 +15,6 @@ class Config(object):
   MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
   MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
   ADMINS = ['lucid003@hotmail.com']
+  MAX_CONTENT_LENGTH = 512 * 512
+  UPLOAD_EXTENSIONS = {'images': ['.jpg', '.png', '.gif'],
+                       'excel': '.xls'}

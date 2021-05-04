@@ -6,8 +6,9 @@ from app import db
 from app.models import last_monday, next_week_friday, Workday
 from app.schedule import bp
 
-@login_required
+
 @bp.route('/schedule', methods=['GET', 'POST'])
+@login_required
 def schedule(start_date=last_monday(), end_date=next_week_friday()):
   dates = Workday.query.filter(Workday.date.between(start_date, end_date))
   return render_template('schedule/schedule.html', dates=dates)

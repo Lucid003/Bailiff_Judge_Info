@@ -1,14 +1,25 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
+
 {% block app_content %}
-<p>before for clause</p>
-  {% for date in dates %}
-    <p>after for date in dates</p>
-    <table class="table table-hover">
-      <tr>{ date.weekday }</tr>
-        { for line in data.splitlines() }
-        <td>{ line }</td>
-        {% endfor %}
+  {% if current_user.permissions >= 1 %}
+    <p><a href="{{ url_for('main.upload') }}">Upload Schedule</a></p>
+  {% endif %}
+
+  <div class="table-responsive"> 
+    <table class="table table-striped table-bordered" style="white-space: pre;font-family:'Courier New'">
+      <thead>
+        <tr>
+          {% for date in dates %}
+          <th scope="col">{{ date. weekday }}  {{ date.date.strftime('%b %d') }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        <tr>{% for date in dates %}<td>{% for line in date.data.splitlines() %}
+{{ line }}{% endfor %}</td>{% endfor %}</tr>
+      </tbody>
     </table>
+  </div>
 {% endblock %}
