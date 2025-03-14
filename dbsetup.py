@@ -9,7 +9,7 @@ for judge in judges:
   db.session.commit()
 
 u = User(username='christopher.mccoy', displayname='Christopher', about_me='Bailiff and creator of this site', permissions=2, judge='Marcela Keim')
-u.set_password('ontheb')
+u.set_password('password')
 db.session.add(u)
 db.session.commit()
 
